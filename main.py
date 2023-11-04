@@ -1,8 +1,15 @@
 #import all the libraries
+import os
 import discord
+from dotenv import load_dotenv
 from discord.ext import commands
 from discord import Interaction
 import datetime
+from dateutil import parser
+
+# Create a TOKEN for discord bot loggin
+load_dotenv()
+TOKEN = os.getenv('TOKEN')
 
 #code in between initializer and client.run
 #initialize bot, use "." for command prefix
@@ -15,14 +22,14 @@ async def on_ready():
 
 # Command functions go here
 @client.command()
-async def setreminder(ctx, remindertitle:str, date: float, time: float):
+async def setreminder(ctx, remindertitle:str, date: str, time: str):
     print(remindertitle, date, time)
     #Combine date and time strings to create datetime string
     reminder_datetime_str = f"{date} {time}"
     
     # Convert string to datetime object
     try:
-        reminder_datetime = datetime.datetime.strptime(reminder_datetime_str, "%m.%d %H.%M")
+        reminder_datetime = datetime.datetime.strptime(reminder_datetime_str, "%m/%d %H:%M")
     except ValueError:
         # Handle the case where the conversion fails
         await ctx.send("Incorrect date or time format. Please use the correct format!")
@@ -39,10 +46,10 @@ async def setreminder(ctx, remindertitle:str, date: float, time: float):
 @setreminder.error
 async def setreminder_error(ctx, error):
     if isinstance(error, commands.BadArgument):
-        await ctx.send("""Incorrect format. Use the command this way: '.setreminder month.date hours.minutes'.
-                       For example: '!setreminder "3 PM Meeting" 5.24 8.30' """)
+        await ctx.send("""Incorrect format. Use the command this way: '!setreminder month/day hours/minutes'.
+                       For example: '!setreminder 3 PM Meeting 5/24 8:30' """)
 
 #please find a way to do a repeat frequency
 
 #Token goes here
-client.run("MTE2OTg0MjczMTY1NzQ3MDAzMg.Gi8yYK.Efd3y8--rreoKTrpLPG9M25EFAqPPGwH5ZqDhI")
+client.run(TOKEN)
