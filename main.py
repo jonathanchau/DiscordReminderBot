@@ -21,10 +21,10 @@ async def on_ready():
 
 # Command functions go here
 @client.command()
-async def setreminder(ctx, remindertitle: str, date: str, time: str):
+async def setreminder(ctx, remindertitle: str, date: str, time: str, midday: str):
     print(remindertitle, date, time)
     # Combine date and time strings to create datetime string
-    reminder_datetime_str = f"{date} {time}"
+    reminder_datetime_str = f"{date} {time} {midday}"
 
     # Convert string to datetime object
     try:
