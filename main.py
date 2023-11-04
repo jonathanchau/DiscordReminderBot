@@ -42,12 +42,21 @@ async def setreminder(ctx, remindertitle:str, date: str, time: str):
 
     #respond to the user
     await ctx.send(f"Your reminder is set for {formatted_date} and {formatted_time}, thank you!")
+    
+    #make wait for day and month difference
+
+    #wait for the correct time (hours, minute)
+    now=datetime.datetime.now()
+    then = now.replace(hour=reminder_datetime.hour,minute=reminder_datetime.min)
+    wait_time = (then-now).total_seconds()
+    await asyncio.sleep(wait_time)
+
+    await ctx.send(f"@everyone {remindertitle}")
 
 @setreminder.error
 async def setreminder_error(ctx, error):
     if isinstance(error, commands.BadArgument):
-        await ctx.send("""Incorrect format. Use the command this way: '!setreminder month/day hours/minutes'.
-                       For example: '!setreminder 3 PM Meeting 5/24 8:30' """)
+        await ctx.send("""Incorrect format. Use the command this way: '!setreminder month/day hours/minutes'. For example: '!setreminder 3 PM Meeting 5/24 8:30' """)
 
 #please find a way to do a repeat frequency
 
