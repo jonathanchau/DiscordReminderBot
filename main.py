@@ -1,6 +1,7 @@
 # Import all the libraries
 import os
 import discord
+from discord.ext import tasks
 from dotenv import load_dotenv
 from discord.ext import commands
 import datetime
@@ -19,10 +20,11 @@ client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 async def on_ready():
     print(f"{client.user.name} is connected.")
 
+
 # Command functions go here
 @client.command()
-async def setreminder(ctx, remindertitle: str, date: str, time: str, midday: str):
-    print(remindertitle, date, time)
+async def setreminder(ctx, remindertitle: str, date: str, time: str, midday: str, repeatDate: str):
+    print(remindertitle, date, time, midday, repeatDate)
     # Combine date and time strings to create datetime string
     reminder_datetime_str = f"{date} {time} {midday}"
 
@@ -40,19 +42,18 @@ async def setreminder(ctx, remindertitle: str, date: str, time: str, midday: str
 
     # Format date and time for display
     formatted_date = reminder_datetime.strftime("%m/%d")
-    formatted_time = reminder_datetime.strftime("%I:%M %p")  # Include AM/PM
+    formatted_time = reminder_datetime.strftime("%I:%M %p") # AM/PM
 
     # Respond to the user
     await ctx.send(
         f"Your reminder is set for {formatted_date} and {formatted_time}, thank you!"
     )
 
-    # Make wait for day and month difference
-    
-    # Wait for the correct time (hours, minute)
-    now = datetime.datetime.now()
-    then = now.replace(hour=reminder_datetime.hour, minute=reminder_datetime.minute)
-    wait_time = (then - now).total_seconds()
+    # Wait for the correct time (month, day, hours, minutes)
+    now_time = datetime.datetime.now()
+    then_time = now_time.replace(month=reminder_datetime.month, day=reminder_datetime.day,hour=reminder_datetime.hour, minute=reminder_datetime.minute)
+    wait_time = (then_time - now_time).total_seconds()
+    # await ctx.send(f"{wait_time} seconds")
     await asyncio.sleep(wait_time)
 
     # Mention everyone in the channel
